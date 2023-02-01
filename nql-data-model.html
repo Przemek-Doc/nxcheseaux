@@ -1,0 +1,3104 @@
+
+<head>
+    <style>
+        body > div {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th p, td p {
+            margin: 2px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: .3%;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: left;
+            white-space:pre;
+        }
+
+     
+    </style>
+
+    <title>NQL data model</title>
+</head>
+
+<body>
+<div>
+
+    <h1>NQL data model</h1>
+    <p>Version 1.2.29-poc-loic-documentation-SNAPSHOT</p>
+    <h2>Data model concepts</h2>
+
+    <a id="punctual-events"><h3>Punctual events</h3></a>
+    <p class="definition">Punctual events reflect occurrences at their exact time. They include crashes, boots or logins.</p>
+    <a id="bucket-events"><h3>Sampled events</h3></a>
+    <p class="definition">Sampled events are used to monitor metrics related to continuous and long-lasting activities. They must be sampled and are presented aggregated in time slices (resolution) of 15-minutes or a day. For example, the CPU, memory, and traffic of a process vary all the time and, as such, must be sampled and aggregated.</p>
+
+    <h2>Data model</h2>
+
+        <table>
+            <tr>
+                <th>Table</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><a href="#device_device">devices</a></td>
+                <td>Table of devices. A device is a physical or virtual machine monitored by a Nexthink Collector.</td>
+            </tr>
+            <tr>
+                <td><a href="#binary_binary">binaries</a></td>
+                <td>Table of binaries. A binary is an executable binary file identified by its hash code.</td>
+            </tr>
+            <tr>
+                <td><a href="#user_user">users</a></td>
+                <td>Table of users. A user is an object that represents an individual account in a device (local user) or in a group of devices (domain user). The account may identify a physical user or a system user.</td>
+            </tr>
+            <tr>
+                <td><a href="#alert_monitor">alert.monitors</a></td>
+                <td>Table of defined alert monitors in the system.</td>
+            </tr>
+            <tr>
+                <td><a href="#alert_alert">alerts</a></td>
+                <td>Table collecting information about instances where metric values go outside normal parameters as defined in monitors.</td>
+            </tr>
+            <tr>
+                <td><a href="#application_application">applications</a></td>
+                <td>Table of defined applications.</td>
+            </tr>
+            <tr>
+                <td><a href="#application_page">application.pages</a></td>
+                <td>Table of defined key pages.</td>
+            </tr>
+            <tr>
+                <td><a href="#application_transaction">application.transactions</a></td>
+                <td>Table of defined transactions.</td>
+            </tr>
+            <tr>
+                <td><a href="#campaign_campaign">campaigns</a></td>
+                <td>Table collecting all active or retired campaigns.</td>
+            </tr>
+            <tr>
+                <td><a href="#campaign_response">campaign.responses</a></td>
+                <td>Table collecting responses (expected or given) to a campaign by a user.</td>
+            </tr>
+            <tr>
+                <td><a href="#collaboration_session">collaboration.sessions</a></td>
+                <td>Table collecting meetings performed with collaboration tools such as Teams or Zoom.</td>
+            </tr>
+            <tr>
+                <td><a href="#connectivity_event">connectivity.events</a></td>
+                <td>Table collecting performance metrics and attributes specific to a device's connectivity.</td>
+            </tr>
+            <tr>
+                <td><a href="#device_performance_boot">device_performance.boots</a></td>
+                <td>Table collecting boots of devices.</td>
+            </tr>
+            <tr>
+                <td><a href="#device_performance_event">device_performance.events</a></td>
+                <td>Table collecting performance metrics and attributes specific to a device.</td>
+            </tr>
+            <tr>
+                <td><a href="#device_performance_hard_reset">device_performance.hard_resets</a></td>
+                <td>Table collecting hard resets of devices.</td>
+            </tr>
+            <tr>
+                <td><a href="#device_performance_system_crash">device_performance.system_crashes</a></td>
+                <td>Table collecting system crashes of devices.</td>
+            </tr>
+            <tr>
+                <td><a href="#dex_score">dex.scores</a></td>
+                <td>Table collecting the DEX score of employees.</td>
+            </tr>
+            <tr>
+                <td><a href="#execution_crash">execution.crashes</a></td>
+                <td>Table collecting crashes of a running process.</td>
+            </tr>
+            <tr>
+                <td><a href="#execution_event">execution.events</a></td>
+                <td>Table collecting performance metrics and attributes specific to a process execution.</td>
+            </tr>
+            <tr>
+                <td><a href="#package_package">packages</a></td>
+                <td>Table of packages. A package is a group of files and executables that together constitute a software application.</td>
+            </tr>
+            <tr>
+                <td><a href="#package_installation">package.installations</a></td>
+                <td>Table collecting package installation events.</td>
+            </tr>
+            <tr>
+                <td><a href="#package_uninstallation">package.uninstallations</a></td>
+                <td>Table collecting package uninstallation events.</td>
+            </tr>
+            <tr>
+                <td><a href="#package_installed_package">package.installed_packages</a></td>
+                <td>Table of all installed packages on all devices.</td>
+            </tr>
+            <tr>
+                <td><a href="#remote_action_remote_action">remote_actions</a></td>
+                <td>Table of defined remote actions.</td>
+            </tr>
+            <tr>
+                <td><a href="#remote_action_execution">remote_action.executions</a></td>
+                <td>Table collecting executed remote actions.</td>
+            </tr>
+            <tr>
+                <td><a href="#remote_action_execution_summary">remote_action.executions_summary</a></td>
+                <td>Table collecting trend of executed remote actions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_connect">session.connects</a></td>
+                <td>Table collecting connections linked to user sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_disconnect">session.disconnects</a></td>
+                <td>Table collecting disconnections linked to user sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_event">session.events</a></td>
+                <td>Table collecting performance metrics and attributes specific to both local and remote sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_lifecycle_event">session.lifecycle_events</a></td>
+                <td>Table collecting all events linked to user sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_lock">session.locks</a></td>
+                <td>Table collecting locks linked to user sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_login">session.logins</a></td>
+                <td>Table collecting all session logins.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_logout">session.logouts</a></td>
+                <td>Table collecting all session logouts.</td>
+            </tr>
+            <tr>
+                <td><a href="#session_unlock">session.unlocks</a></td>
+                <td>Table collecting unlocks linked to user sessions.</td>
+            </tr>
+            <tr>
+                <td><a href="#web_error">web.errors</a></td>
+                <td>Table collecting errors of defined business-critical services.</td>
+            </tr>
+            <tr>
+                <td><a href="#web_event">web.events</a></td>
+                <td>Table collecting events of defined business-critical services.</td>
+            </tr>
+            <tr>
+                <td><a href="#web_page_view">web.page_views</a></td>
+                <td>Table collecting page views of defined business-critical services.</td>
+            </tr>
+            <tr>
+                <td><a href="#web_transaction">web.transactions</a></td>
+                <td>Table collecting transactions of defined business-critical services.</td>
+            </tr>
+        </table>
+
+    <div class="namespace-title"><h3 id="device">Namespace device</h3></div>
+    
+
+        <p class="long-description">The device namespace includes one large devices table, which has multiple fields referring to device properties such as hardware, operating system and also the Nexthink collector installed.</p>
+
+
+    <div class="object-title"><h4 id="device_device">devices</h4></div>
+
+        <p class="long-description">Table of devices. A device is a physical or virtual machine monitored by a Nexthink Collector.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>ad_site</td>
+            <td>string</td>
+            <td>AD site of the device as configured in Active Directory</td>
+        </tr>
+        <tr>
+            <td>antiviruses</td>
+            <td>jsonType</td>
+            <td>Antivirus object</td>
+        </tr>
+        <tr>
+            <td>antiviruses.is_up_to_date</td>
+            <td>enumeration</td>
+            <td>Up to date</td>
+        </tr>
+        <tr>
+            <td>antiviruses.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>antiviruses.real_time_protection</td>
+            <td>enumeration</td>
+            <td>Real-time protection</td>
+        </tr>
+        <tr>
+            <td>collector.tag_id</td>
+            <td>integer</td>
+            <td>Collector installation tag</td>
+        </tr>
+        <tr>
+            <td>collector.tag_string</td>
+            <td>string</td>
+            <td>Collector string tag</td>
+        </tr>
+        <tr>
+            <td>collector.target_update_date</td>
+            <td>datetime</td>
+            <td>Date when the update of this specific Nexthink Collector is scheduled</td>
+        </tr>
+        <tr>
+            <td>collector.target_version</td>
+            <td>string</td>
+            <td>Version that the Nexthink Collector will update towards next</td>
+        </tr>
+        <tr>
+            <td>collector.uid</td>
+            <td>uuid</td>
+            <td>Collector assignment license ID</td>
+        </tr>
+        <tr>
+            <td>collector.update_group</td>
+            <td>string</td>
+            <td>Update group containing the Nexthink Collector</td>
+        </tr>
+        <tr>
+            <td>collector.version</td>
+            <td>version</td>
+            <td>Version of the Nexthink Collector installed on the device</td>
+        </tr>
+        <tr>
+            <td>cpus</td>
+            <td>jsonType</td>
+            <td>CPU definition</td>
+        </tr>
+        <tr>
+            <td>cpus.frequency</td>
+            <td>integer</td>
+            <td>CPU frequency</td>
+        </tr>
+        <tr>
+            <td>cpus.name</td>
+            <td>string</td>
+            <td>CPU name</td>
+        </tr>
+        <tr>
+            <td>cpus.number_of_cores</td>
+            <td>integer</td>
+            <td>Number of cores</td>
+        </tr>
+        <tr>
+            <td>cpus.number_of_logical_processors</td>
+            <td>integer</td>
+            <td>Number of logical processors</td>
+        </tr>
+        <tr>
+            <td>disks</td>
+            <td>jsonType</td>
+            <td>On Windows 10 under Disk Management, disk drives are called Disk. They are displayed as Disk 0, Disk 1… On Windows 10, they are the list of storage under This PC which have letters assigned (C:,D:,…). They can be of different types. Local Disk, USB drive or virtual disk. They can be called drives as well. On OSX in Disk Utility, they are called Media and are the top level entries. They are listed under Internal or External. They are called disk0, disk1, disk2… On OSX the diskutil list command will list them all as /dev/disk0, /dev/disk1,…</td>
+        </tr>
+        <tr>
+            <td>disks.capacity</td>
+            <td>bytes</td>
+            <td>Capacity</td>
+        </tr>
+        <tr>
+            <td>disks.is_bootable</td>
+            <td>bool</td>
+            <td>Is bootable</td>
+        </tr>
+        <tr>
+            <td>disks.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>disks.type</td>
+            <td>enumeration</td>
+            <td>Type</td>
+        </tr>
+        <tr>
+            <td>distinguished_name</td>
+            <td>string</td>
+            <td>Distinguished name as reported by the Collector</td>
+        </tr>
+        <tr>
+            <td>entity</td>
+            <td>string</td>
+            <td>Entity to which the device belongs</td>
+        </tr>
+        <tr>
+            <td>firewalls</td>
+            <td>jsonType</td>
+            <td>Firewall object</td>
+        </tr>
+        <tr>
+            <td>firewalls.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>firewalls.real_time_protection</td>
+            <td>enumeration</td>
+            <td>Real-time protection</td>
+        </tr>
+        <tr>
+            <td>first_seen</td>
+            <td>datetime</td>
+            <td>First time the device was seen on the platform</td>
+        </tr>
+        <tr>
+            <td>gpus</td>
+            <td>jsonType</td>
+            <td>Graphics Processing Unit</td>
+        </tr>
+        <tr>
+            <td>gpus.memory</td>
+            <td>bytes</td>
+            <td>Memory</td>
+        </tr>
+        <tr>
+            <td>gpus.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>group_name</td>
+            <td>string</td>
+            <td>Group to which the device belongs</td>
+        </tr>
+        <tr>
+            <td>hardware.bios_serial_number</td>
+            <td>string</td>
+            <td>BIOS serial number</td>
+        </tr>
+        <tr>
+            <td>hardware.chassis_serial_number</td>
+            <td>string</td>
+            <td>Chassis serial number</td>
+        </tr>
+        <tr>
+            <td>hardware.machine_serial_number</td>
+            <td>string</td>
+            <td>Device serial number</td>
+        </tr>
+        <tr>
+            <td>hardware.manufacturer</td>
+            <td>string</td>
+            <td>Device manufacturer</td>
+        </tr>
+        <tr>
+            <td>hardware.memory</td>
+            <td>bytes</td>
+            <td>Total amount of RAM in bytes</td>
+        </tr>
+        <tr>
+            <td>hardware.model</td>
+            <td>string</td>
+            <td>Device model</td>
+        </tr>
+        <tr>
+            <td>hardware.product_id</td>
+            <td>string</td>
+            <td>Product ID of the device; Similar to model in most devices</td>
+        </tr>
+        <tr>
+            <td>hardware.product_line</td>
+            <td>string</td>
+            <td>Device product line</td>
+        </tr>
+        <tr>
+            <td>hardware.type</td>
+            <td>enumeration</td>
+            <td>Device type. Possible values are:&#xD;&#xA; • desktop&#xD;&#xA; • laptop</td>
+        </tr>
+        <tr>
+            <td>last_seen</td>
+            <td>datetime</td>
+            <td>Last time the device was seen active on the platform</td>
+        </tr>
+        <tr>
+            <td>local_admins</td>
+            <td>jsonType</td>
+            <td>Local admin object</td>
+        </tr>
+        <tr>
+            <td>local_admins.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>local_admins.type</td>
+            <td>enumeration</td>
+            <td>Type</td>
+        </tr>
+        <tr>
+            <td>membership_type</td>
+            <td>enumeration</td>
+            <td>Type of computer group membership. Possible values:&#xD;&#xA; • standalone&#xD;&#xA; • workgroup&#xD;&#xA; • domain&#xD;&#xA; • open directory</td>
+        </tr>
+        <tr>
+            <td>monitors</td>
+            <td>jsonType</td>
+            <td>At boot and every 6 hours, the Collector sends a list of screens connected to the device at that moment.</td>
+        </tr>
+        <tr>
+            <td>monitors.diagonal_size</td>
+            <td>float</td>
+            <td>Diagonal size</td>
+        </tr>
+        <tr>
+            <td>monitors.horizontal_resolution</td>
+            <td>integer</td>
+            <td>Horizontal resolution</td>
+        </tr>
+        <tr>
+            <td>monitors.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>monitors.vendor</td>
+            <td>string</td>
+            <td>Vendor</td>
+        </tr>
+        <tr>
+            <td>monitors.vertical_resolution</td>
+            <td>integer</td>
+            <td>Vertical resolution</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the device:&#xD;&#xA; • For Windows: NetBios Name&#xD;&#xA; • For macOS: computer name used on the network</td>
+        </tr>
+        <tr>
+            <td>operating_system.architecture</td>
+            <td>enumeration</td>
+            <td>Architecture of the operating system. Possible values are:&#xD;&#xA; • x86&#xD;&#xA; • x64&#xD;&#xA; • ARM</td>
+        </tr>
+        <tr>
+            <td>operating_system.build</td>
+            <td>version</td>
+            <td>Build number of the operating system. '0.0.0.0' means the Collector version is incompatible or the data isn’t yet available.</td>
+        </tr>
+        <tr>
+            <td>operating_system.is_activated</td>
+            <td>bool</td>
+            <td>Yes when Windows is activated</td>
+        </tr>
+        <tr>
+            <td>operating_system.last_update</td>
+            <td>datetime</td>
+            <td>Last system update time</td>
+        </tr>
+        <tr>
+            <td>operating_system.name</td>
+            <td>string</td>
+            <td>Name, version and architecture, when applicable, of the operating system</td>
+        </tr>
+        <tr>
+            <td>operating_system.platform</td>
+            <td>enumeration</td>
+            <td>Device platform. A platform is a set of operating system families on which the same objects, activities, events and properties can be retrieved. Possible values are:&#xD;&#xA; • Windows&#xD;&#xA; • macOS&#xD;&#xA; • Linux</td>
+        </tr>
+        <tr>
+            <td>operating_system.wmi_status</td>
+            <td>enumeration</td>
+            <td>Windows Management Instrumentation service status. Possible values are:&#xD;&#xA; • ok&#xD;&#xA; • failure</td>
+        </tr>
+        <tr>
+            <td>public_ip.city</td>
+            <td>string</td>
+            <td>City where the device is located</td>
+        </tr>
+        <tr>
+            <td>public_ip.country</td>
+            <td>string</td>
+            <td>Country where the device is located</td>
+        </tr>
+        <tr>
+            <td>public_ip.ip_address</td>
+            <td>ipAddress</td>
+            <td>Public IP address of the device</td>
+        </tr>
+        <tr>
+            <td>public_ip.state</td>
+            <td>string</td>
+            <td>Subdivision (e.g., state) where the device is located</td>
+        </tr>
+        <tr>
+            <td>sid</td>
+            <td>string</td>
+            <td>Windows security identifier for the device</td>
+        </tr>
+        <tr>
+            <td>user_account_control_status</td>
+            <td>enumeration</td>
+            <td>User account control status (UAC). Possible values:&#xD;&#xA; • ok&#xD;&#xA; • at risk</td>
+        </tr>
+        <tr>
+            <td>virtualization.desktop_pool</td>
+            <td>string</td>
+            <td>Collection holding devices with the same purpose and simulated hardware</td>
+        </tr>
+        <tr>
+            <td>virtualization.hostname</td>
+            <td>string</td>
+            <td>Virtualization host on which the device runs</td>
+        </tr>
+        <tr>
+            <td>virtualization.hypervisor_name</td>
+            <td>string</td>
+            <td>Hypervisor platform which is used</td>
+        </tr>
+        <tr>
+            <td>virtualization.type</td>
+            <td>enumeration</td>
+            <td>Type of virtualization the device provides. Possible values are:&#xD;&#xA; • shared, several users work on the same virtual machine at the same time&#xD;&#xA; • personal, the device can be used by one user at a time and changes to the system persist&#xD;&#xA; • pooled, the device can be used by one user at a time and, once they log off, all changes including documents and data, are erased</td>
+        </tr>
+        <tr>
+            <td>volumes</td>
+            <td>jsonType</td>
+            <td>A Volume belongs to a disk drive. On Windows 10, under Disk Management, the volumes are listed under Volume. On OSX Big Sur, under Disk Utility, volumes are listed under each Media to which it belongs. On OSX, the diskutil list command will list them below the disk drives which have identifiers of type /dev/disk0s1, /dev/disk0s2…</td>
+        </tr>
+        <tr>
+            <td>volumes.capacity</td>
+            <td>bytes</td>
+            <td>Capacity</td>
+        </tr>
+        <tr>
+            <td>volumes.name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>volumes.system</td>
+            <td>bool</td>
+            <td>Operating system volume</td>
+        </tr>
+        <tr>
+            <td>volumes.usage</td>
+            <td>float</td>
+            <td>Usage</td>
+        </tr>
+    </table>
+
+
+
+
+    <div class="namespace-title"><h3 id="binary">Namespace binary</h3></div>
+    
+
+        <p class="long-description">Table of binaries. A binary is an executable binary file identified by its hash code.</p>
+
+
+    <div class="object-title"><h4 id="binary_binary">binaries</h4></div>
+
+        <p class="long-description">Table of binaries. A binary is an executable binary file identified by its hash code.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>architecture</td>
+            <td>enumeration</td>
+            <td>The binary’s architecture. Possible values are:&#xD;&#xA; • x86&#xD;&#xA; • x64</td>
+        </tr>
+        <tr>
+            <td>company</td>
+            <td>string</td>
+            <td>Company</td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td>string</td>
+            <td>Description as it appears in the binary file</td>
+        </tr>
+        <tr>
+            <td>first_seen</td>
+            <td>datetime</td>
+            <td>First time the binary was seen on the platform, no matter the device</td>
+        </tr>
+        <tr>
+            <td>has_user_interface</td>
+            <td>bool</td>
+            <td>Yes when the application has an interactive user interface</td>
+        </tr>
+        <tr>
+            <td>last_seen</td>
+            <td>datetime</td>
+            <td>Last time the binary was seen active on the platform</td>
+        </tr>
+        <tr>
+            <td>md5_hash</td>
+            <td>bytea</td>
+            <td>MD5 hash of the binary</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Binary name</td>
+        </tr>
+        <tr>
+            <td>platform</td>
+            <td>enumeration</td>
+            <td>The platform or operating system family on which the binary is running. Possible values are:&#xD;&#xA; • Windows&#xD;&#xA; • macOS</td>
+        </tr>
+        <tr>
+            <td>product_name</td>
+            <td>string</td>
+            <td>Product name</td>
+        </tr>
+        <tr>
+            <td>sha-1_hash</td>
+            <td>bytea</td>
+            <td>SHA_1 hash of the binary</td>
+        </tr>
+        <tr>
+            <td>sha-256_hash</td>
+            <td>bytea</td>
+            <td>SHA_256 hash of the binary</td>
+        </tr>
+        <tr>
+            <td>size</td>
+            <td>bytes</td>
+            <td>Binary file size in bytes</td>
+        </tr>
+        <tr>
+            <td>version</td>
+            <td>version</td>
+            <td>Version of the binary</td>
+        </tr>
+    </table>
+
+
+
+
+    <div class="namespace-title"><h3 id="user">Namespace user</h3></div>
+    
+
+        <p class="long-description">The users table within the user namespace, includes information about the individual accounts across the IT infrastructure. It contains all employees recognized by your Nexthink instance. Most of the table fields are derived from Azure Active Directory and are included in the "ad" grouping. A user may have access to more than one device.</p>
+
+
+    <div class="object-title"><h4 id="user_user">users</h4></div>
+
+        <p class="long-description">Table of users. A user is an object that represents an individual account in a device (local user) or in a group of devices (domain user). The account may identify a physical user or a system user.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>ad.city</td>
+            <td>string</td>
+            <td>User’s locality as a city as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.country_code</td>
+            <td>string</td>
+            <td>Country/Region as listed in Active Directory, represented as a 2-character code based on ISO-3166</td>
+        </tr>
+        <tr>
+            <td>ad.department</td>
+            <td>string</td>
+            <td>User department as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.distinguished_name</td>
+            <td>string</td>
+            <td>Active Directory distinguished name (DN)</td>
+        </tr>
+        <tr>
+            <td>ad.email_address</td>
+            <td>string</td>
+            <td>User’s email address</td>
+        </tr>
+        <tr>
+            <td>ad.full_name</td>
+            <td>string</td>
+            <td>User’s full name as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.job_title</td>
+            <td>string</td>
+            <td>Job title as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.last_update</td>
+            <td>datetime</td>
+            <td>Time of last system update</td>
+        </tr>
+        <tr>
+            <td>ad.office</td>
+            <td>string</td>
+            <td>User’s physical delivery office location as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.organizational_unit</td>
+            <td>string</td>
+            <td>Name of the organizational unit as listed in Active Directory</td>
+        </tr>
+        <tr>
+            <td>ad.username</td>
+            <td>string</td>
+            <td>Azure AD username</td>
+        </tr>
+        <tr>
+            <td>first_seen</td>
+            <td>datetime</td>
+            <td>First time the user was seen on the platform, no matter the device</td>
+        </tr>
+        <tr>
+            <td>last_seen</td>
+            <td>datetime</td>
+            <td>Last time the user was seen active on the platform</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>User logon name</td>
+        </tr>
+        <tr>
+            <td>sid</td>
+            <td>string</td>
+            <td>Windows security identifier for the user</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>enumeration</td>
+            <td>Type of user. Possible values are:&#xD;&#xA; • local&#xD;&#xA; • domain&#xD;&#xA; • system</td>
+        </tr>
+    </table>
+
+
+
+
+    <div class="namespace-title"><h3 id="alert">Namespace alert</h3></div>
+    
+
+        <p class="long-description">The alert namespace consists of two tables: alerts and monitors. Monitors store sets of rules configured by Nexthink users (monitor name, threshold, priority, etc.), describing acceptable limits for metrics. Alerts store information about instances where metric values go outside normal parameters as defined in monitors. You may want to query the alerts table if you have permission to run investigations but aren't allowed to access alerts dashboards or when creating dashboards for reporting.</p>
+
+
+
+    <div class="bco-title"><h4 id="alert_monitor">monitors</h4></div>
+
+    <p class="long-description">Table of defined alert monitors in the system.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>comparison_operator</td>
+            <td>enumeration</td>
+            <td>Comparison operator. Possible values are:&#xD;&#xA; • at_least&#xD;&#xA; • less_or_equal</td>
+        </tr>
+        <tr>
+            <td>multiple_contexts</td>
+            <td>bool</td>
+            <td>Yes when NQL has a group by clause</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Alert monitor name</td>
+        </tr>
+        <tr>
+            <td>nql_id</td>
+            <td>string</td>
+            <td>Alert monitor NQL ID</td>
+        </tr>
+        <tr>
+            <td>origin</td>
+            <td>enumeration</td>
+            <td>Origin of alert creation. Possible values are:&#xD;&#xA; • custom&#xD;&#xA; • built_in&#xD;&#xA; • library</td>
+        </tr>
+        <tr>
+            <td>priority</td>
+            <td>enumeration</td>
+            <td>The priority of the alert. Possible values are:&#xD;&#xA; • low&#xD;&#xA; • medium&#xD;&#xA; • high&#xD;&#xA; • critical</td>
+        </tr>
+        <tr>
+            <td>tags</td>
+            <td>jsonArray</td>
+            <td>Tags related to the alert</td>
+        </tr>
+        <tr>
+            <td>threshold</td>
+            <td>float</td>
+            <td>Threshold for the alert</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>enumeration</td>
+            <td>Alert monitor type. Possible values are:&#xD;&#xA; • application&#xD;&#xA; • threshold</td>
+        </tr>
+    </table>
+
+
+    <div class="timeseries-title"><h4 id="alert_alert">alerts</h4></div>
+
+    <p class="long-description">Table collecting information about instances where metric values go outside normal parameters as defined in monitors.</p>
+
+    <p>alerts are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        alerts are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#alert_monitor">monitor</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>context</td>
+            <td>string</td>
+            <td>Alert context in JSON format</td>
+        </tr>
+        <tr>
+            <td>context_hash</td>
+            <td>string</td>
+            <td>MD5 hash of the context JSON</td>
+        </tr>
+        <tr>
+            <td>is_auto_recovery</td>
+            <td>bool</td>
+            <td>Yes when the alert was automatically recovered</td>
+        </tr>
+        <tr>
+            <td>is_grouped</td>
+            <td>bool</td>
+            <td>Yes when the alert event is a grouping alert</td>
+        </tr>
+        <tr>
+            <td>number_of_alerts</td>
+            <td>long</td>
+            <td>Number of alerts triggered</td>
+        </tr>
+        <tr>
+            <td>recovery_time</td>
+            <td>datetime</td>
+            <td>Time of the recovery of the alert</td>
+        </tr>
+        <tr>
+            <td>recovery_value</td>
+            <td>float</td>
+            <td>Value of the recovery metric</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>enumeration</td>
+            <td>Latest alert event status. Possible values are:&#xD;&#xA; • open: Alert in error state&#xD;&#xA; • closed: Alert recovered</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Alert bucket time</td>
+        </tr>
+        <tr>
+            <td>trigger_time</td>
+            <td>datetime</td>
+            <td>Time of the trigger of the alert</td>
+        </tr>
+        <tr>
+            <td>trigger_value</td>
+            <td>float</td>
+            <td>Value of the metric bypassing the threshold</td>
+        </tr>
+        <tr>
+            <td>uid</td>
+            <td>string</td>
+            <td>Alert event UID</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="application">Namespace application</h3></div>
+    
+
+        <p class="long-description">The application namespace contains a set of tables which store information about business-critical services configured by Nexthink users in the Application module. The tables include configuration data such as the name and id of each application, as well as defined key pages and transactions. These tables can be queried alongside associated tables to help identify issues with business-critical services.</p>
+
+
+
+    <div class="bco-title"><h4 id="application_application">applications</h4></div>
+
+    <p class="long-description">Table of defined applications.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the Application Experience application</td>
+        </tr>
+    </table>
+    <div class="bco-title"><h4 id="application_page">pages</h4></div>
+
+    <p class="long-description">Table of defined key pages.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the Application Experience key page</td>
+        </tr>
+    </table>
+    <div class="bco-title"><h4 id="application_transaction">transactions</h4></div>
+
+    <p class="long-description">Table of defined transactions.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the web transaction</td>
+        </tr>
+    </table>
+
+
+
+    <div class="namespace-title"><h3 id="campaign">Namespace campaign</h3></div>
+    
+
+        <p class="long-description">The campaign namespace consists of two tables. The campaign table stores information about campaigns configured by Nexthink users (such as campaign id, name, trigger method, etc.). The responses table collects all responses to campaigns. It indicates whether the employee declined or postponed the campaign or how many questions they answered.</p>
+
+
+
+    <div class="bco-title"><h4 id="campaign_campaign">campaigns</h4></div>
+
+    <p class="long-description">Table collecting all active and retired campaigns.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name</td>
+        </tr>
+        <tr>
+            <td>nql_id</td>
+            <td>string</td>
+            <td>NQL ID</td>
+        </tr>
+        <tr>
+            <td>priority</td>
+            <td>enumeration</td>
+            <td>Campaign priority. Possible values are:&#xD;&#xA; • draft&#xD;&#xA; • published&#xD;&#xA; • retired</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>enumeration</td>
+            <td>Campaign status. Possible values are:&#xD;&#xA; • draft&#xD;&#xA; • published&#xD;&#xA; • retired</td>
+        </tr>
+        <tr>
+            <td>trigger_method</td>
+            <td>enumeration</td>
+            <td>Trigger launching the campaign. Possible values are:&#xD;&#xA; • manual&#xD;&#xA; • investigation&#xD;&#xA; • schedule&#xD;&#xA; • remediation</td>
+        </tr>
+    </table>
+
+
+    <div class="timeseries-title"><h4 id="campaign_response">responses</h4></div>
+
+    <p class="long-description">Table collecting responses (expected or given) to a campaign by a user.</p>
+
+    <p>responses are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        responses are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#campaign_campaign">campaign</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>answers</td>
+            <td>string</td>
+            <td>Answers</td>
+        </tr>
+        <tr>
+            <td>first_displayed</td>
+            <td>datetime</td>
+            <td>Time when the employee saw the campaign for the first time, adjusted to your local time</td>
+        </tr>
+        <tr>
+            <td>first_planned</td>
+            <td>datetime</td>
+            <td>Time when the campaign is set to planned state to employee/device, adjusted to your local time</td>
+        </tr>
+        <tr>
+            <td>first_targeted</td>
+            <td>datetime</td>
+            <td>Time  when the campaign is targeted to employee/device, adjusted to your local time</td>
+        </tr>
+        <tr>
+            <td>historical_state</td>
+            <td>jsonArray</td>
+            <td>Array showing historical state updates for an employee’s campaign response</td>
+        </tr>
+        <tr>
+            <td>historical_state_details</td>
+            <td>jsonArray</td>
+            <td>Array showing historical state details updates for an employee’s campaign response</td>
+        </tr>
+        <tr>
+            <td>historical_time</td>
+            <td>jsonArray</td>
+            <td>Array showing historical response update times in UTC for an employee’s campaign response</td>
+        </tr>
+        <tr>
+            <td>number_of_answered_questions</td>
+            <td>integer</td>
+            <td>Number of questions answered by employee</td>
+        </tr>
+        <tr>
+            <td>request_id</td>
+            <td>string</td>
+            <td>Request ID</td>
+        </tr>
+        <tr>
+            <td>state</td>
+            <td>enumeration</td>
+            <td>State of campaign response. Possible values are:&#xD;&#xA; • planned&#xD;&#xA; • targeted&#xD;&#xA; • answered&#xD;&#xA; • declined&#xD;&#xA; • canceled&#xD;&#xA; • retired</td>
+        </tr>
+        <tr>
+            <td>state_details</td>
+            <td>enumeration</td>
+            <td>State details of campaign response. Possible values are:&#xD;&#xA; • notified&#xD;&#xA; • opened&#xD;&#xA; • partially&#xD;&#xA; • fully&#xD;&#xA; • offline&#xD;&#xA; • delayed&#xD;&#xA; • postponed&#xD;&#xA; • canceled&#xD;&#xA; • expired&#xD;&#xA; • not_applicable</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time when the response was updated for the last time, adjusted to your local time</td>
+        </tr>
+        <tr>
+            <td>trigger_method</td>
+            <td>enumeration</td>
+            <td>Trigger causing the request. Possible values are:&#xD;&#xA; • manual&#xD;&#xA; • scheduled</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="collaboration">Namespace collaboration</h3></div>
+    
+
+        <p class="long-description">The collaboration namespace consists of only one table: sessions, which refers to all meetings performed with collaboration tools such as Teams, Zoom or Skype. It stores detailed information about each meeting, including its duration, connection type, equipment used, audio and video quality, among other details. This data is used to monitor critical collaboration applications, e.g., using dashboards with call quality overview.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="collaboration_session">sessions</h4></div>
+
+    <p class="long-description">Table collecting meetings performed with collaboration tools such as Teams or Zoom.</p>
+
+    <p>sessions are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        sessions are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>application.type</td>
+            <td>enumeration</td>
+            <td>Application used for a given call. Possible values are:&#xD;&#xA; • Teams&#xD;&#xA; • Skype_for_Business&#xD;&#xA; • Lync&#xD;&#xA; • Zoom</td>
+        </tr>
+        <tr>
+            <td>application.version</td>
+            <td>version</td>
+            <td>Application version for a given call</td>
+        </tr>
+        <tr>
+            <td>audio.inbound_jitter</td>
+            <td>duration</td>
+            <td>Average change in delay between successive inbound audio packets</td>
+        </tr>
+        <tr>
+            <td>audio.inbound_latency</td>
+            <td>duration</td>
+            <td>The time it takes to get an audio IP packet from point A to point B</td>
+        </tr>
+        <tr>
+            <td>audio.inbound_packet_loss</td>
+            <td>float</td>
+            <td>Ratio of inbound audio packets that never reach their destination compared to the total</td>
+        </tr>
+        <tr>
+            <td>audio.inbound_rocs</td>
+            <td>float</td>
+            <td>Ratio comparing the number of audio frames generated by packet loss healing mechanisms to the total number of audio frames, averaged for the whole session</td>
+        </tr>
+        <tr>
+            <td>audio.inbound_rtt</td>
+            <td>duration</td>
+            <td>Time an audio RTP packet takes to reach the participant’s device and for the response to reach its origin, averaged for the whole session</td>
+        </tr>
+        <tr>
+            <td>audio.outbound_jitter</td>
+            <td>duration</td>
+            <td>Average change in delay between successive outbound audio packets</td>
+        </tr>
+        <tr>
+            <td>audio.outbound_latency</td>
+            <td>duration</td>
+            <td>The time it takes to get an audio IP packet from point A to point B</td>
+        </tr>
+        <tr>
+            <td>audio.outbound_packet_loss</td>
+            <td>float</td>
+            <td>Ratio of outbound audio packets that never reach their destination compared to the total</td>
+        </tr>
+        <tr>
+            <td>audio.outbound_rocs</td>
+            <td>float</td>
+            <td>Average ratio comparing the number of outbound audio frames with concealed samples generated by packet loss healing mechanisms to the total number of audio frames</td>
+        </tr>
+        <tr>
+            <td>audio.outbound_rtt</td>
+            <td>duration</td>
+            <td>Time an audio RTP packet takes to reach its destination from the participant’s device and for the response to come back, averaged for the whole session</td>
+        </tr>
+        <tr>
+            <td>audio.quality</td>
+            <td>enumeration</td>
+            <td>Assessment of the audio call quality. Possible values are:&#xD;&#xA; • good&#xD;&#xA; • poor</td>
+        </tr>
+        <tr>
+            <td>call.end_time</td>
+            <td>datetime</td>
+            <td>Time when the last user left the call</td>
+        </tr>
+        <tr>
+            <td>call.id</td>
+            <td>string</td>
+            <td>Unique identifier for the call record. Read-only</td>
+        </tr>
+        <tr>
+            <td>call.start_time</td>
+            <td>datetime</td>
+            <td>Time when the first user joined the call</td>
+        </tr>
+        <tr>
+            <td>connection_type</td>
+            <td>enumeration</td>
+            <td>The internet connection type for a participant in a given call. Possible values are:&#xD;&#xA; • Ethernet&#xD;&#xA; • WiFi&#xD;&#xA; • cellular&#xD;&#xA; • PPP&#xD;&#xA; • tunnel&#xD;&#xA; • point_to_point</td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td>duration</td>
+            <td>Session duration</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>Time when the last user left the session</td>
+        </tr>
+        <tr>
+            <td>has_screen_share</td>
+            <td>bool</td>
+            <td>Yes when screen sharing was used during the call</td>
+        </tr>
+        <tr>
+            <td>has_video</td>
+            <td>bool</td>
+            <td>Yes when video was used during the call</td>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>string</td>
+            <td>Unique identifier for a session. Peer-to-peer calls typically only have one session, whereas group calls typically have at least one session per participant. Read-only. Nullable.</td>
+        </tr>
+        <tr>
+            <td>participant_device.camera</td>
+            <td>string</td>
+            <td>Camera for a given participant’s device</td>
+        </tr>
+        <tr>
+            <td>participant_device.mac_address</td>
+            <td>string</td>
+            <td>MAC address for a given participant’s device</td>
+        </tr>
+        <tr>
+            <td>participant_device.microphone</td>
+            <td>string</td>
+            <td>Microphone for a given participant’s device</td>
+        </tr>
+        <tr>
+            <td>participant_device.speaker</td>
+            <td>string</td>
+            <td>Speaker for a given participant’s device</td>
+        </tr>
+        <tr>
+            <td>participant_device.type</td>
+            <td>enumeration</td>
+            <td>Participant’s device type. Possible values are:&#xD;&#xA; • Windows&#xD;&#xA; • macOS&#xD;&#xA; • iOS&#xD;&#xA; • Android&#xD;&#xA; • web&#xD;&#xA; • IP_phone&#xD;&#xA; • room_system&#xD;&#xA; • Surface_Hub&#xD;&#xA; • HoloLens&#xD;&#xA; • PSTN</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Time when the first user joined the session</td>
+        </tr>
+        <tr>
+            <td>video.inbound_frame_rate</td>
+            <td>integer</td>
+            <td>The frequency at which inbound frames appear on a display</td>
+        </tr>
+        <tr>
+            <td>video.inbound_jitter</td>
+            <td>duration</td>
+            <td>Average change in delay between successive video inbound packets</td>
+        </tr>
+        <tr>
+            <td>video.inbound_latency</td>
+            <td>duration</td>
+            <td>The time it takes to get a video IP packet from point A to point B</td>
+        </tr>
+        <tr>
+            <td>video.inbound_packet_loss</td>
+            <td>float</td>
+            <td>Ratio of inbound video packets that never reach their destination compared to the total</td>
+        </tr>
+        <tr>
+            <td>video.inbound_rtt</td>
+            <td>duration</td>
+            <td>The time it takes to get a video IP packet from point A to point B and back to point A</td>
+        </tr>
+        <tr>
+            <td>video.outbound_frame_rate</td>
+            <td>integer</td>
+            <td>The frequency at which outbound frames appear on a display</td>
+        </tr>
+        <tr>
+            <td>video.outbound_jitter</td>
+            <td>duration</td>
+            <td>Average change in delay between successive video outbound packets</td>
+        </tr>
+        <tr>
+            <td>video.outbound_latency</td>
+            <td>duration</td>
+            <td>The time it takes to get a video IP packet from point A to point B</td>
+        </tr>
+        <tr>
+            <td>video.outbound_packet_loss</td>
+            <td>float</td>
+            <td>Ratio of outbound video packets that never reach their destination compared to the total</td>
+        </tr>
+        <tr>
+            <td>video.outbound_rtt</td>
+            <td>duration</td>
+            <td>The time it takes to get a video IP packet from point A to point B and back to point A</td>
+        </tr>
+        <tr>
+            <td>video.quality</td>
+            <td>enumeration</td>
+            <td>Assessment of the video call quality. Possible values are:&#xD;&#xA; • good&#xD;&#xA; • poor</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="connectivity">Namespace connectivity</h3></div>
+    
+
+        <p class="long-description">Connectivity events offers details about IP networking performance. It can be used to detect and diagnose networking issues such as misconfigurations, poor Wi-Fi signal strength and other issues affecting employees in particular offices or when working from home. Useful trend data can also be obtained using this table.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="connectivity_event">events</h4></div>
+
+    <p class="long-description">Table collecting performance metrics and attributes specific to a device's connectivity.</p>
+
+    <p>events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        events are associated to
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>primary_physical_adapter.dns_ips</td>
+            <td>ipAddressArray</td>
+            <td>List of IP addresses of the DNS set for the primary physical network adapter</td>
+        </tr>
+        <tr>
+            <td>primary_physical_adapter.gateway_ips</td>
+            <td>ipAddressArray</td>
+            <td>Gateway IP of the endpoint for the primary physical network adapter</td>
+        </tr>
+        <tr>
+            <td>primary_physical_adapter.local_ips</td>
+            <td>ipAddressArray</td>
+            <td>Local IP of the endpoint for the primary physical network adapter</td>
+        </tr>
+        <tr>
+            <td>primary_physical_adapter.type</td>
+            <td>enumeration</td>
+            <td>Type of network adapter. Possible values are:&#xD;&#xA; • WiFi&#xD;&#xA; • Ethernet&#xD;&#xA; • Bluetooth</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>wifi.band</td>
+            <td>enumeration</td>
+            <td>WiFi band used. Possible values are:&#xD;&#xA; • wifi_900MHz&#xD;&#xA; • wifi_2dot4GHz&#xD;&#xA; • wifi_3dot65GHz&#xD;&#xA; • wifi_5GHz</td>
+        </tr>
+        <tr>
+            <td>wifi.bssid</td>
+            <td>string</td>
+            <td>BSSID of the connected access point</td>
+        </tr>
+        <tr>
+            <td>wifi.channel_id</td>
+            <td>integer</td>
+            <td>WiFi channel used</td>
+        </tr>
+        <tr>
+            <td>wifi.channel_width</td>
+            <td>integer</td>
+            <td>Frequency band width for the WiFi channel being used. Higher means higher theoretical transmission rate.</td>
+        </tr>
+        <tr>
+            <td>wifi.noise_level</td>
+            <td>integer</td>
+            <td>Average WiFi noise level. Unit is in [dBm], the lower (farther from 0), the better.</td>
+        </tr>
+        <tr>
+            <td>wifi.p5_signal_strength</td>
+            <td>integer</td>
+            <td>5th percentile of the RSSI. During the 15minutes period, the rssi was 95% of the time equal or larger than the receive value</td>
+        </tr>
+        <tr>
+            <td>wifi.physical_layer_protocol</td>
+            <td>enumeration</td>
+            <td>802.11 protocols used. Possible values are:&#xD;&#xA; • 802_11a&#xD;&#xA; • 802_11b&#xD;&#xA; • 802_11g&#xD;&#xA; • 802_11n&#xD;&#xA; • 802_11ac&#xD;&#xA; • 802_11ad&#xD;&#xA; • 802_11ax</td>
+        </tr>
+        <tr>
+            <td>wifi.receive_rate</td>
+            <td>integer</td>
+            <td>Average receive rate for the WiFi adapter in [Mbit/sec], higher is better. Not always available (Windows only)</td>
+        </tr>
+        <tr>
+            <td>wifi.signal_strength</td>
+            <td>integer</td>
+            <td>Average WiFi signal strength or RSSI. Unit is in [dBm], the higher (closer to 0), the better</td>
+        </tr>
+        <tr>
+            <td>wifi.ssid</td>
+            <td>string</td>
+            <td>SSID of the WiFi network</td>
+        </tr>
+        <tr>
+            <td>wifi.transmission_rate</td>
+            <td>integer</td>
+            <td>Average transmission rate for the WiFi adapter in [Mbit/sec], higher is better</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="device_performance">Namespace device_performance</h3></div>
+    
+
+        <p class="long-description">The device performance namespace gathers tables that store information related to boots, crashes and other device performance indicators. Querying them allows users to investigate system issues.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="device_performance_boot">boots</h4></div>
+
+    <p class="long-description">Table collecting boots of devices.</p>
+
+    <p>boots are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        boots are associated to
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td>duration</td>
+            <td>Duration of the boot</td>
+        </tr>
+        <tr>
+            <td>number_of_boots</td>
+            <td>integer</td>
+            <td>Number of device boots</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the boot</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>enumeration</td>
+            <td>Type of the boot. Possible values are:&#xD;&#xA; • fast_startup&#xD;&#xA; • full_boot</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="device_performance_event">events</h4></div>
+
+    <p class="long-description">Table collecting performance metrics and attributes specific to a device.</p>
+
+    <p>events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        events are associated to
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>cpu_queue_length</td>
+            <td>integer</td>
+            <td>Average CPU queue length</td>
+        </tr>
+        <tr>
+            <td>cpu_usage</td>
+            <td>float</td>
+            <td>Sum of the average % CPU usage of each logical core</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>free_memory</td>
+            <td>bytes</td>
+            <td>Average free RAM</td>
+        </tr>
+        <tr>
+            <td>installed_memory</td>
+            <td>bytes</td>
+            <td>Total size of the RAM installed</td>
+        </tr>
+        <tr>
+            <td>non_system_drive_capacity</td>
+            <td>bytes</td>
+            <td>Total size of the non-system drives</td>
+        </tr>
+        <tr>
+            <td>non_system_drive_free_space</td>
+            <td>bytes</td>
+            <td>Amount of free space available on the non-system drives</td>
+        </tr>
+        <tr>
+            <td>non_system_drive_usage</td>
+            <td>bytes</td>
+            <td>Amount of used space on the non-system drives</td>
+        </tr>
+        <tr>
+            <td>normalized_cpu_usage</td>
+            <td>float</td>
+            <td>Average % CPU usage across all logical cores</td>
+        </tr>
+        <tr>
+            <td>number_of_logical_processors</td>
+            <td>integer</td>
+            <td>Number of logical CPUs available</td>
+        </tr>
+        <tr>
+            <td>read_operations_per_second</td>
+            <td>integer</td>
+            <td>Read operations on disks per second</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>system_drive_capacity</td>
+            <td>bytes</td>
+            <td>Size of the system drive</td>
+        </tr>
+        <tr>
+            <td>system_drive_free_space</td>
+            <td>bytes</td>
+            <td>Free space available on the system drive</td>
+        </tr>
+        <tr>
+            <td>system_drive_usage</td>
+            <td>bytes</td>
+            <td>Amount of space used on the system drive</td>
+        </tr>
+        <tr>
+            <td>used_memory</td>
+            <td>bytes</td>
+            <td>Average RAM used</td>
+        </tr>
+        <tr>
+            <td>write_operations_per_second</td>
+            <td>integer</td>
+            <td>Write operations on disks per second</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="device_performance_hard_reset">hard_resets</h4></div>
+
+    <p class="long-description">Table collecting hard resets of devices.</p>
+
+    <p>hard_resets are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        hard_resets are associated to
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_hard_resets</td>
+            <td>integer</td>
+            <td>Number of hard resets</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the crash</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="device_performance_system_crash">system_crashes</h4></div>
+
+    <p class="long-description">Table collecting system crashes of devices.</p>
+
+    <p>system_crashes are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        system_crashes are associated to
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>error_code</td>
+            <td>long</td>
+            <td>Error code for system crashes</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>string</td>
+            <td>Error label for system crashes</td>
+        </tr>
+        <tr>
+            <td>number_of_system_crashes</td>
+            <td>integer</td>
+            <td>Number of system crashes</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the system crash</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="dex">Namespace dex</h3></div>
+    
+
+        <p class="long-description">Querying the DEX score table gives an overview of employee experience for all employees or a specific subset of employees. For example, users can query DEX scores for specific locations, devices with a specific operating system, etc.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="dex_score">scores</h4></div>
+
+    <p class="long-description">Table collecting the DEX score of employees.</p>
+
+    <p>scores are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        scores are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>applications.improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we improve the applications score</td>
+        </tr>
+        <tr>
+            <td>applications.time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to application-related issues</td>
+        </tr>
+        <tr>
+            <td>applications.value</td>
+            <td>float</td>
+            <td>Applications score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we improve the collaboration score</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_audio_quality_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix Teams audio quality issues</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_audio_quality_value</td>
+            <td>float</td>
+            <td>Teams audio quality score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix Teams-related issues</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_value</td>
+            <td>float</td>
+            <td>Teams collaboration score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_video_quality_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix Teams video quality issues</td>
+        </tr>
+        <tr>
+            <td>collaboration.teams_video_quality_value</td>
+            <td>float</td>
+            <td>Teams video quality score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.value</td>
+            <td>float</td>
+            <td>Collaboration score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_audio_quality_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we improve Zoom audio quality</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_audio_quality_value</td>
+            <td>float</td>
+            <td>Zoom audio quality score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix Zoom-related issues</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_value</td>
+            <td>float</td>
+            <td>Zoom collaboration score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_video_quality_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we improve Zoom video quality</td>
+        </tr>
+        <tr>
+            <td>collaboration.zoom_video_quality_value</td>
+            <td>float</td>
+            <td>Zoom video quality score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.device_responsiveness_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we raise device responsiveness</td>
+        </tr>
+        <tr>
+            <td>endpoint.device_responsiveness_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to delays between user input and device response</td>
+        </tr>
+        <tr>
+            <td>endpoint.device_responsiveness_value</td>
+            <td>float</td>
+            <td>Score measuring device responsiveness based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix endpoint issues</td>
+        </tr>
+        <tr>
+            <td>endpoint.logon_speed_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we shorten logon delays</td>
+        </tr>
+        <tr>
+            <td>endpoint.logon_speed_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to logon delays</td>
+        </tr>
+        <tr>
+            <td>endpoint.logon_speed_value</td>
+            <td>float</td>
+            <td>Logon speed score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.os_compliance_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we raise OS compliance</td>
+        </tr>
+        <tr>
+            <td>endpoint.os_compliance_value</td>
+            <td>float</td>
+            <td>OS compliance score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we raise software performance</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to software performance issues</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_value</td>
+            <td>float</td>
+            <td>Software performance score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_with_gui_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix performance issues in applications which possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_with_gui_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to performance issues in applications which possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_with_gui_value</td>
+            <td>float</td>
+            <td>Software performance score for applications which possess a GUI based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_without_gui_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix performance issues in applications which don’t possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_performance_without_gui_value</td>
+            <td>float</td>
+            <td>Software performance score for applications which don’t possess a GUI based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we raise software reliability</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to software reliability issues</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_value</td>
+            <td>float</td>
+            <td>Software reliability score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_with_gui_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix crashes in applications which possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_with_gui_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to reliability issues in applications which possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_with_gui_value</td>
+            <td>float</td>
+            <td>Crash score for applications which possess a GUI based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_without_gui_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we fix crashes in applications which don’t possess a GUI</td>
+        </tr>
+        <tr>
+            <td>endpoint.software_reliability_without_gui_value</td>
+            <td>float</td>
+            <td>Crash score for applications which don’t possess a GUI based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to endpoint issues</td>
+        </tr>
+        <tr>
+            <td>endpoint.value</td>
+            <td>float</td>
+            <td>Endpoint overall score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>endpoint.virtualization_performance_improvement</td>
+            <td>float</td>
+            <td>Potential improvement of the DEX score if we raise virtualization performance</td>
+        </tr>
+        <tr>
+            <td>endpoint.virtualization_performance_time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to virtualization performance issues</td>
+        </tr>
+        <tr>
+            <td>endpoint.virtualization_performance_value</td>
+            <td>float</td>
+            <td>Virtualization performance score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>technology.time_lost</td>
+            <td>duration</td>
+            <td>Time lost over the past 7 days due to technology issues</td>
+        </tr>
+        <tr>
+            <td>technology.value</td>
+            <td>float</td>
+            <td>Technology score based on data from the past 7 days</td>
+        </tr>
+        <tr>
+            <td>time_lost</td>
+            <td>duration</td>
+            <td>Overall time lost over the past 7 days due to issues highlighted by the DEX score</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>float</td>
+            <td>DEX overall score based on data from the past 7 days</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="execution">Namespace execution</h3></div>
+    
+
+        <p class="long-description">The execution namespace consists of two tables: crashes and events. The crashes table contains instances of executables crashing. The execution events table stores information about the performance of executables in 15-minute or 24-hour time blocks.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="execution_crash">crashes</h4></div>
+
+    <p class="long-description">Table collecting crashes of a running process.</p>
+
+    <p>crashes are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        crashes are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>binary_path</td>
+            <td>string</td>
+            <td>Normalized binary path</td>
+        </tr>
+        <tr>
+            <td>crash_on_start</td>
+            <td>bool</td>
+            <td>Yes when the process crashes after only a second</td>
+        </tr>
+        <tr>
+            <td>number_of_crashes</td>
+            <td>integer</td>
+            <td>Number of crashes</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the crash</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="execution_event">events</h4></div>
+
+    <p class="long-description">Table collecting performance metrics and attributes specific to a process execution.</p>
+
+    <p>events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        events are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>connection_establishment_time</td>
+            <td>duration</td>
+            <td>Average time to establish connection</td>
+        </tr>
+        <tr>
+            <td>cpu_time</td>
+            <td>duration</td>
+            <td>Sum of CPU time for all the underlying processes</td>
+        </tr>
+        <tr>
+            <td>device_uniq</td>
+            <td>long</td>
+            <td>Number of devices</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>execution_duration</td>
+            <td>duration</td>
+            <td>Duration of the process</td>
+        </tr>
+        <tr>
+            <td>focus_time</td>
+            <td>duration</td>
+            <td>Amount of time any windows of an executable were in focus</td>
+        </tr>
+        <tr>
+            <td>incoming_throughput</td>
+            <td>float</td>
+            <td>Average download speed</td>
+        </tr>
+        <tr>
+            <td>incoming_traffic</td>
+            <td>bytes</td>
+            <td>Total amount of IPv4 and IPv6 traffic received</td>
+        </tr>
+        <tr>
+            <td>memory</td>
+            <td>bytes</td>
+            <td>Average memory used by all processes running in parallel</td>
+        </tr>
+        <tr>
+            <td>number_of_established_connections</td>
+            <td>integer</td>
+            <td>Number of successful connections</td>
+        </tr>
+        <tr>
+            <td>number_of_freezes</td>
+            <td>integer</td>
+            <td>Number of execution freezes</td>
+        </tr>
+        <tr>
+            <td>number_of_logical_processors</td>
+            <td>integer</td>
+            <td>Number of logical processors on the device</td>
+        </tr>
+        <tr>
+            <td>number_of_no_host_connections</td>
+            <td>integer</td>
+            <td>Number of connections where no host/party is available</td>
+        </tr>
+        <tr>
+            <td>number_of_no_service_connections</td>
+            <td>integer</td>
+            <td>Number of connections where no service is available</td>
+        </tr>
+        <tr>
+            <td>number_of_page_faults</td>
+            <td>long</td>
+            <td>Total number of page faults</td>
+        </tr>
+        <tr>
+            <td>number_of_rejected_connections</td>
+            <td>integer</td>
+            <td>Number of connections refused</td>
+        </tr>
+        <tr>
+            <td>number_of_stopped_processes</td>
+            <td>integer</td>
+            <td>Total number of stopped processes</td>
+        </tr>
+        <tr>
+            <td>outgoing_throughput</td>
+            <td>float</td>
+            <td>Average upload speed</td>
+        </tr>
+        <tr>
+            <td>outgoing_traffic</td>
+            <td>bytes</td>
+            <td>Total amount of IPv4 and IPv6 traffic sent</td>
+        </tr>
+        <tr>
+            <td>primary_physical_adapter_type</td>
+            <td>enumeration</td>
+            <td>Type of network adapter. Possible values are:&#xD;&#xA; • WiFi&#xD;&#xA; • Ethernet&#xD;&#xA; • Bluetooth</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>user_uniq</td>
+            <td>long</td>
+            <td>Number of users</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="package">Namespace package</h3></div>
+    
+
+        <p class="long-description">The package namespace includes information about software products (applications and updates) in their distributable form. In addition to the packages and installed_packages tables we tackled in the previous lesson, it includes two events tables: installations and uninstallations.</p>
+
+
+    <div class="object-title"><h4 id="package_package">packages</h4></div>
+
+        <p class="long-description">Table of packages. A package is a group of files and executables that together constitute a software application.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>first_seen</td>
+            <td>datetime</td>
+            <td>First time the package was seen on the platform, no matter the device</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the package</td>
+        </tr>
+        <tr>
+            <td>parent_name</td>
+            <td>string</td>
+            <td>Name of the parent package. The field is empty for packages of the type program. For the packages of type update, the field contains the name of the software the patch is applied to</td>
+        </tr>
+        <tr>
+            <td>platform</td>
+            <td>enumeration</td>
+            <td>Platform on which the package is installed. Possible values are:&#xD;&#xA; • Windows&#xD;&#xA; • macOS</td>
+        </tr>
+        <tr>
+            <td>publisher</td>
+            <td>string</td>
+            <td>Name of the company that publishes the software</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>enumeration</td>
+            <td>Possible values are:&#xD;&#xA; • Program: it’s the default value&#xD;&#xA; • Update: when a package is installed as an update using Windows updater</td>
+        </tr>
+        <tr>
+            <td>version</td>
+            <td>string</td>
+            <td>Version of the package</td>
+        </tr>
+    </table>
+
+
+
+    <div class="timeseries-title"><h4 id="package_installation">installations</h4></div>
+
+    <p class="long-description">Table collecting package installation events.</p>
+
+    <p>installations are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        installations are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#package_package">package</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the installation event</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="package_uninstallation">uninstallations</h4></div>
+
+    <p class="long-description">Table collecting package uninstallation events.</p>
+
+    <p>uninstallations are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        uninstallations are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#package_package">package</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the uninstallation event</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="remote_action">Namespace remote_action</h3></div>
+    
+
+        <p class="long-description">The remote action namespace consists of tables giving details about remote actions, including the configuration data and the remote action executions. Nexthink Remote Actions allows you to execute small scripts on employee devices. It provides several opportunities for the prevention and remediation of employee issues and for gathering additional information from endpoints running Nexthink Collector.</p>
+
+
+
+    <div class="bco-title"><h4 id="remote_action_remote_action">remote_actions</h4></div>
+
+    <p class="long-description">Table of defined remote actions.</p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>Name of the remote action</td>
+        </tr>
+        <tr>
+            <td>nql_id</td>
+            <td>string</td>
+            <td>Remote action NQL ID</td>
+        </tr>
+        <tr>
+            <td>source</td>
+            <td>enumeration</td>
+            <td>Source of the remote action. Possible values are:&#xD;&#xA; • Finder&#xD;&#xA; • Cloud</td>
+        </tr>
+    </table>
+
+
+    <div class="timeseries-title"><h4 id="remote_action_execution">executions</h4></div>
+
+    <p class="long-description">Table collecting executed remote actions.</p>
+
+    <p>executions are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        executions are associated to
+            <a href="#device_device">device</a>&nbsp
+            <a href="#remote_action_remote_action">remote_action</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>inputs</td>
+            <td>string</td>
+            <td>inputs</td>
+        </tr>
+        <tr>
+            <td>message_uuid</td>
+            <td>string</td>
+            <td>Message UUID</td>
+        </tr>
+        <tr>
+            <td>number_of_executions</td>
+            <td>long</td>
+            <td>number_of_executions</td>
+        </tr>
+        <tr>
+            <td>outputs</td>
+            <td>string</td>
+            <td>outputs</td>
+        </tr>
+        <tr>
+            <td>purpose</td>
+            <td>enumeration</td>
+            <td>Purpose of the remote action. Possible values are:&#xD;&#xA; • data_collection&#xD;&#xA; • remediation&#xD;&#xA; • both</td>
+        </tr>
+        <tr>
+            <td>request_id</td>
+            <td>string</td>
+            <td>Request ID</td>
+        </tr>
+        <tr>
+            <td>request_time</td>
+            <td>datetime</td>
+            <td>Time of the execution request</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>enumeration</td>
+            <td>Status of the remote action. Possible values are:&#xD;&#xA; • failure&#xD;&#xA; • success&#xD;&#xA; • in_progress&#xD;&#xA; • waiting_on_device:Waiting for a device to connect&#xD;&#xA; • expired: Execution request has expired before the device connected&#xD;&#xA; • cancelled&#xD;&#xA; • old_Collector: Collector version not supported&#xD;&#xA; • no_script: Remote action does not have a script for this platform</td>
+        </tr>
+        <tr>
+            <td>status_details</td>
+            <td>string</td>
+            <td>status_details</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the execution</td>
+        </tr>
+        <tr>
+            <td>trigger_method</td>
+            <td>enumeration</td>
+            <td>Trigger method of the remote action. Possible values are:&#xD;&#xA; • automatic&#xD;&#xA; • API&#xD;&#xA; • manual&#xD;&#xA; • workflow</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="remote_action_execution_summary">executions_summary</h4></div>
+
+    <p class="long-description">Table collecting trend of executed remote actions.</p>
+
+    <p>executions_summary are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        executions_summary are associated to
+            <a href="#remote_action_remote_action">remote_action</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>device_uniq</td>
+            <td>long</td>
+            <td>Number of devices</td>
+        </tr>
+        <tr>
+            <td>inputs</td>
+            <td>string</td>
+            <td>Inputs</td>
+        </tr>
+        <tr>
+            <td>number_of_executions</td>
+            <td>long</td>
+            <td>Number of executions</td>
+        </tr>
+        <tr>
+            <td>purpose</td>
+            <td>enumeration</td>
+            <td>Purpose of the remote action. Possible values are:&#xD;&#xA; • data_collection&#xD;&#xA; • remediation&#xD;&#xA; • both</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>enumeration</td>
+            <td>Status of the remote action. Possible values are:&#xD;&#xA; • failure&#xD;&#xA; • success&#xD;&#xA; • in_progress&#xD;&#xA; • waiting_on_device:Waiting for a device to connect&#xD;&#xA; • expired: Execution request has expired before the device connected&#xD;&#xA; • cancelled&#xD;&#xA; • old_Collector: Collector version not supported&#xD;&#xA; • no_script: Remote action does not have a script for this platform</td>
+        </tr>
+        <tr>
+            <td>status_details</td>
+            <td>string</td>
+            <td>Details of the status</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the execution</td>
+        </tr>
+        <tr>
+            <td>trigger_method</td>
+            <td>enumeration</td>
+            <td>Trigger method of the remote action. Possible values are:&#xD;&#xA; • automatic&#xD;&#xA; • API&#xD;&#xA; • manual&#xD;&#xA; • workflow</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="session">Namespace session</h3></div>
+    
+
+        <p class="long-description">The session namespace consists of several events tables relating to a user's session on a device. The session events table contains all sampled metrics in 15-minute and 24-hour buckets. The others are punctual events linked to a session.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="session_connect">connects</h4></div>
+
+    <p class="long-description">Table collecting connections linked to user sessions.</p>
+
+    <p>connects are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        connects are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_connects</td>
+            <td>integer</td>
+            <td>Number of session connects</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the connection</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_disconnect">disconnects</h4></div>
+
+    <p class="long-description">Table collecting disconnections linked to user sessions.</p>
+
+    <p>disconnects are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        disconnects are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_disconnects</td>
+            <td>integer</td>
+            <td>Number of session disconnects</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the connection</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_event">events</h4></div>
+
+    <p class="long-description">Table collecting performance metrics and attributes specific to both local and remote sessions.</p>
+
+    <p>events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        events are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>average_network_latency</td>
+            <td>duration</td>
+            <td>Average latency of the network</td>
+        </tr>
+        <tr>
+            <td>average_rtt</td>
+            <td>duration</td>
+            <td>Average round trip time</td>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>client_ip</td>
+            <td>ipAddress</td>
+            <td>Client IP address</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>max_network_latency</td>
+            <td>duration</td>
+            <td>Maximum network latency. It measures the performance of the network. When the value is too high, the user will see some screen lag and a degraded user experience. The measure isn’t available for Console sessions</td>
+        </tr>
+        <tr>
+            <td>max_rtt</td>
+            <td>duration</td>
+            <td>Maximum round trip time. Citrix RTT which represents the screen lag experienced by the user. It measures the time between a user input and the display of the response. It includes the network time. The measure is only available for Citrix ICA</td>
+        </tr>
+        <tr>
+            <td>protocol</td>
+            <td>enumeration</td>
+            <td>Protocol used to connect to the session. The possible values are:&#xD;&#xA; • Citrix - ICA&#xD;&#xA; • VMware - Blast&#xD;&#xA; • VMware - PCOIP&#xD;&#xA; • RDP&#xD;&#xA; • Local session&#xD;&#xA; • Amazon PCOIP</td>
+        </tr>
+        <tr>
+            <td>session_id</td>
+            <td>long</td>
+            <td>Session ID of the user. On macOS, it captures the PID of the session leading process</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>user_interaction_time</td>
+            <td>duration</td>
+            <td>Duration of the user interaction</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_lifecycle_event">lifecycle_events</h4></div>
+
+    <p class="long-description">Table collecting all events linked to user sessions.</p>
+
+    <p>lifecycle_events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        lifecycle_events are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_lifecycle_events</td>
+            <td>integer</td>
+            <td>Number of session events</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the connection</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>enumeration</td>
+            <td>Type of lifecycle event. Possible values are:&#xD;&#xA; • login&#xD;&#xA; • logout&#xD;&#xA; • lock&#xD;&#xA; • unlock&#xD;&#xA; • connect&#xD;&#xA; • disconnect</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_lock">locks</h4></div>
+
+    <p class="long-description">Table collecting locks linked to user sessions.</p>
+
+    <p>locks are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        locks are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_locks</td>
+            <td>integer</td>
+            <td>Number of session locks</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the connection</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_login">logins</h4></div>
+
+    <p class="long-description">Table collecting all session logins.</p>
+
+    <p>logins are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        logins are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_logins</td>
+            <td>integer</td>
+            <td>Number of logins</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UUID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the login</td>
+        </tr>
+        <tr>
+            <td>time_until_desktop_is_ready</td>
+            <td>duration</td>
+            <td>Number of seconds between the user logging on and the device being ready to use. Desktops and laptops are considered fully functional once the CPU usage drops below 15% and the disk usage drops below 80%; and servers once the CPU usage of all processes belonging to the corresponding user drops below 15%.</td>
+        </tr>
+        <tr>
+            <td>time_until_desktop_is_visible</td>
+            <td>duration</td>
+            <td>Number of seconds between the user logging on and the desktop being shown</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_logout">logouts</h4></div>
+
+    <p class="long-description">Table collecting all session logouts.</p>
+
+    <p>logouts are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        logouts are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_logouts</td>
+            <td>integer</td>
+            <td>Number of logouts</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UUID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the logout</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="session_unlock">unlocks</h4></div>
+
+    <p class="long-description">Table collecting unlocks linked to user sessions.</p>
+
+    <p>unlocks are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        unlocks are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>number_of_unlocks</td>
+            <td>integer</td>
+            <td>Number of session unlocks</td>
+        </tr>
+        <tr>
+            <td>session_uid</td>
+            <td>string</td>
+            <td>Session UID</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>datetime</td>
+            <td>Time of the connection</td>
+        </tr>
+    </table>
+
+
+    <div class="namespace-title"><h3 id="web">Namespace web</h3></div>
+    
+
+        <p class="long-description">The web namespace contains tables that store events, errors, page views and transactions that occur in the business-critical services defined in the tables of the application namespace.</p>
+
+
+
+
+    <div class="timeseries-title"><h4 id="web_error">errors</h4></div>
+
+    <p class="long-description">Table collecting errors of defined business-critical services.</p>
+
+    <p>errors are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        errors are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+            <a href="#application_page">page</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>adapter_type</td>
+            <td>enumeration</td>
+            <td>Type of adapter used when the error occurred. Possible values are:&#xD;&#xA; • WiFi&#xD;&#xA; • Ethernet&#xD;&#xA; • Bluetooth</td>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>code</td>
+            <td>integer</td>
+            <td>Extended HTTP response status</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>string</td>
+            <td>Error name as reported by the browser</td>
+        </tr>
+        <tr>
+            <td>number_of_errors</td>
+            <td>integer</td>
+            <td>Number of errors</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>url</td>
+            <td>string</td>
+            <td>Navigation URL</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="web_event">events</h4></div>
+
+    <p class="long-description">Table collecting events of defined business-critical services.</p>
+
+    <p>events are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        events are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+            <a href="#application_page">page</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td>duration</td>
+            <td>Time spent using the application or key page</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="web_page_view">page_views</h4></div>
+
+    <p class="long-description">Table collecting page views of defined business-critical services.</p>
+
+    <p>page_views are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        page_views are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+            <a href="#application_page">page</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>adapter_type</td>
+            <td>enumeration</td>
+            <td>Type of adapter used when the navigation occurred. Possible values are:&#xD;&#xA; • WiFi&#xD;&#xA; • Ethernet&#xD;&#xA; • Bluetooth</td>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.connect</td>
+            <td>duration</td>
+            <td>Time spent establishing TCP connection, including TLS handshake if performed</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.dom_content_loading</td>
+            <td>duration</td>
+            <td>Time spent in page 'DOMContentLoaded' event</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.dom_processing</td>
+            <td>duration</td>
+            <td>Time needed by the DOM to move from interactive to complete state</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.domain_lookup</td>
+            <td>duration</td>
+            <td>Time spent on DNS resolution</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.load_event</td>
+            <td>duration</td>
+            <td>Time spent on the page load event</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.redirect</td>
+            <td>duration</td>
+            <td>Time spent on page redirections</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.request</td>
+            <td>duration</td>
+            <td>Elapsed time between the first and last bytes of the request</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.response</td>
+            <td>duration</td>
+            <td>Elapsed time between the first and last bytes of the response</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.secure_connection</td>
+            <td>duration</td>
+            <td>Time spent to perform TLS handshake</td>
+        </tr>
+        <tr>
+            <td>detailed_page_load_time.unload_event</td>
+            <td>duration</td>
+            <td>Time spent on the page unload event</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>experience_level</td>
+            <td>enumeration</td>
+            <td>User experience level of a navigation evaluated by the extension, based on the defined thresholds. Possible values are:&#xD;&#xA; • good&#xD;&#xA; • average&#xD;&#xA; • frustrating</td>
+        </tr>
+        <tr>
+            <td>hard_navigation_time</td>
+            <td>duration</td>
+            <td>Navigation duration from the start to the end of the load event</td>
+        </tr>
+        <tr>
+            <td>is_soft_navigation</td>
+            <td>bool</td>
+            <td>Yes when the navigation is soft</td>
+        </tr>
+        <tr>
+            <td>number_of_page_views</td>
+            <td>integer</td>
+            <td>Number of page views</td>
+        </tr>
+        <tr>
+            <td>page_load_time.backend</td>
+            <td>duration</td>
+            <td>Estimated time spent on the backend side during a navigation</td>
+        </tr>
+        <tr>
+            <td>page_load_time.client</td>
+            <td>duration</td>
+            <td>Time spent on client side during a navigation</td>
+        </tr>
+        <tr>
+            <td>page_load_time.network</td>
+            <td>duration</td>
+            <td>Estimated time spent on the network side during a navigation</td>
+        </tr>
+        <tr>
+            <td>page_load_time.overall</td>
+            <td>duration</td>
+            <td>Time taken by a page to load</td>
+        </tr>
+        <tr>
+            <td>response_size</td>
+            <td>bytes</td>
+            <td>Size of the response</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>url</td>
+            <td>string</td>
+            <td>Navigation URL, only available in hour and minute precision</td>
+        </tr>
+    </table>
+    <div class="timeseries-title"><h4 id="web_transaction">transactions</h4></div>
+
+    <p class="long-description">Table collecting transactions of defined business-critical services.</p>
+
+    <p>transactions are <a href="#bucket-events">Sampled events</a>. </p>
+   
+    <p class="association">
+        transactions are associated to
+            <a href="#user_user">user</a>&nbsp
+            <a href="#device_device">device</a>&nbsp
+            <a href="#binary_binary">binary</a>&nbsp
+            <a href="#application_application">application</a>&nbsp
+            <a href="#application_transaction">transaction</a>&nbsp
+    </p>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>adapter_type</td>
+            <td>enumeration</td>
+            <td>Type of adapter used when the transaction occurred. Possible values are:&#xD;&#xA; • WiFi&#xD;&#xA; • Ethernet&#xD;&#xA; • Bluetooth</td>
+        </tr>
+        <tr>
+            <td>bucket_duration</td>
+            <td>duration</td>
+            <td>Duration of the bucket</td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td>duration</td>
+            <td>Time to perform the transaction</td>
+        </tr>
+        <tr>
+            <td>end_time</td>
+            <td>datetime</td>
+            <td>End time of the bucket</td>
+        </tr>
+        <tr>
+            <td>experience_level</td>
+            <td>enumeration</td>
+            <td>User experience level of a transaction evaluated by the extension, based on the defined thresholds. Possible values are:&#xD;&#xA; • good&#xD;&#xA; • average&#xD;&#xA; • frustrating</td>
+        </tr>
+        <tr>
+            <td>number_of_transactions</td>
+            <td>integer</td>
+            <td>Number of transactions</td>
+        </tr>
+        <tr>
+            <td>start_time</td>
+            <td>datetime</td>
+            <td>Start time of the bucket</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>enumeration</td>
+            <td>Transaction status. Possible values are:&#xD;&#xA; • completed&#xD;&#xA; • failed&#xD;&#xA; • time_out&#xD;&#xA; • aborted_unload&#xD;&#xA; • aborted_new&#xD;&#xA; • aborted_input</td>
+        </tr>
+    </table>
+
+
+
+</div>
+</body>
+</html>
